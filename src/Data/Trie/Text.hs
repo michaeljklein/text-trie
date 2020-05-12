@@ -51,6 +51,7 @@ module Data.Trie.Text
 
     -- * Single-value modification
     , alterBy, insert, adjust, delete
+    , deleteSubmap''
 
     -- * Combining tries
     , mergeBy, unionL, unionR
@@ -168,6 +169,12 @@ adjust f q = adjustBy (\_ _ -> f) q (impossible "adjust")
 delete :: Text -> Trie a -> Trie a
 {-# INLINE delete #-}
 delete q = alterBy (\_ _ _ -> Nothing) q (impossible "delete")
+
+deleteSubmap'' key trie =
+    foldr
+        (\k t -> delete k t)
+        trie
+        (map L.toStrict . keys $ submap key trie)
 
 {---------------------------------------------------------------
 -- Trie-combining functions
