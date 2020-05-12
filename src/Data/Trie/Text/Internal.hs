@@ -1019,26 +1019,20 @@ mergeMaybe f (Just v0)   (Just v1) = f v0 v1
 -- | Delete the submap under the given key.
 deleteSubmap :: Text -> Trie a -> Trie a
 {-# INLINE deleteSubmap #-}
-deleteSubmap q_
-    | T.null q_ = const Empty
-    | otherwise = go q_
+deleteSubmap _ Empty            = Empty
+deleteSubmap q t@(Branch p m l r)
+    | nomatch qh p m  = t
+    | zero qh m       = branch p m (deleteSubmap q l) r
+    | otherwise       = branch p m l (deleteSubmap q r)
     where
-    go _ Empty            = Empty
-
-    go q t@(Branch p m l r)
-        | nomatch qh p m  = t
-        | zero qh m       = branch p m (go q l) r
-        | otherwise       = branch p m l (go q r)
-        where
-        qh = errorLogHead "deleteSubmap" q
-
-    go q (Arc k mv t) =
-        let (_,_,q') = breakMaximalPrefix k q in
-        case T.null q' of
-        True  -> -- Partially, or completely match the Prefix
-                Empty
-        False -> -- Have different Prefix yet, do nothing
-                arc k mv (go q' t)
+    qh = errorLogHead "deleteSubmap" q
+deleteSubmap q (Arc k mv t) =
+    let (_,_,q') = breakMaximalPrefix k q in
+    case T.null q' of
+    True  -> -- Partially, or completely match the Prefix
+            Empty
+    False -> -- Have different Prefix yet, do nothing
+            arc k mv (deleteSubmap q' t)
 
 -- Inefficient implementation which is equivalent of `deleteSubmap`
 deleteSubmap' :: Text -> Trie a -> Trie a
