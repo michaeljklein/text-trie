@@ -56,6 +56,10 @@ module Data.Trie.Text.Internal
     , contextualFilterMap
     , contextualMapBy
 
+    -- * Something else
+    , deleteSubmap
+    , deleteSubmap'
+
     -- * Priority-queue functions
     , minAssoc, maxAssoc
     , updateMinViewBy, updateMaxViewBy
@@ -1010,6 +1014,40 @@ mergeMaybe _ Nothing      Nothing  = Nothing
 mergeMaybe _ Nothing mv1@(Just _)  = mv1
 mergeMaybe _ mv0@(Just _) Nothing  = mv0
 mergeMaybe f (Just v0)   (Just v1) = f v0 v1
+
+
+-- | Delete the submap under the given key.
+deleteSubmap :: Text -> Trie a -> Trie a
+{-# INLINE deleteSubmap #-}
+deleteSubmap q_
+    | T.null q_ = const Empty
+    | otherwise = go q_
+    where
+    go _ Empty            = Empty
+
+    go q t@(Branch p m l r)
+        | nomatch qh p m  = t
+        | zero qh m       = branch p m (go q l) r
+        | otherwise       = branch p m l (go q r)
+        where
+        qh = errorLogHead "deleteSubmap" q
+
+    go q (Arc k mv t) =
+        let (_,_,q') = breakMaximalPrefix k q in
+        case T.null q' of
+        True  -> -- Partially, or completely match the Prefix
+                Empty
+        False -> -- Have different Prefix yet, do nothing
+                arc k mv (go q' t)
+
+-- Inefficient implementation which is equivalent of `deleteSubmap`
+deleteSubmap' :: Text -> Trie a -> Trie a
+{-# INLINE deleteSubmap' #-}
+deleteSubmap' key trie =
+    foldr
+        (\k t -> alterBy (\_ _ _ -> Nothing) k (error "delete") t)
+        trie
+        (map L.toStrict . toListBy const $ submap key trie)
 
 
 {-----------------------------------------------------------
