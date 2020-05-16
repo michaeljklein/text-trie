@@ -51,6 +51,8 @@ module Data.Trie.Text
 
     -- * Single-value modification
     , alterBy, insert, adjust, delete
+    , deleteSubmap
+    , deleteSubmap'
     , deleteSubmap''
 
     -- * Combining tries
