@@ -1,6 +1,7 @@
 flags: {}
+resolver: lts-16.16
 packages:
 - .
 extra-deps:
-- bytestring-trie-0.2.5.0
-resolver: lts-13.15
+- bytestring-trie-0.2.5.0@sha256:9efa9c6f556314d28486be2470ff789419c5238ed2e354870623a3cbbd28fbe2,3349
+- microbench-0.1@sha256:f5c60aa2f40f9114aa0fb1fb2fe2f6cd8506d7ce3d1f0f46295d34651e523a2c,983
