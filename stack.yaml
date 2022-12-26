@@ -3,4 +3,4 @@ packages:
 - .
 extra-deps:
 - microbench-0.1
-resolver: lts-19.33
+resolver: lts-20.4
