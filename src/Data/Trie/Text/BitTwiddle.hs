@@ -32,7 +32,10 @@ import Data.Text.Internal.Word (TextElem)
 
 import Data.Bits
 
-#if __GLASGOW_HASKELL__ >= 902
+#if MIN_VERSION_text(2,0,0)
+import GHC.Exts  (Int(..), uncheckedShiftRLWord8# )
+import GHC.Word (Word8(..))
+#elif __GLASGOW_HASKELL__ >= 902
 import GHC.Exts  (Int(..), uncheckedShiftRLWord16# )
 import GHC.Word (Word16(..))
 #elif __GLASGOW_HASKELL__ >= 503
@@ -55,7 +58,9 @@ type Mask    = KeyElem
 uncheckedShiftRL :: TextElem -> Int -> TextElem
 {-# INLINE [0] uncheckedShiftRL #-}
 -- GHC: use unboxing to get @uncheckedShiftRL@ inlined.
-#if __GLASGOW_HASKELL__ >= 902
+#if MIN_VERSION_text(2,0,0)
+uncheckedShiftRL (W8# x) (I# i) = W8# (uncheckedShiftRLWord8# x i)
+#elif __GLASGOW_HASKELL__ >= 902
 uncheckedShiftRL (W16# x) (I# i) = W16# (uncheckedShiftRLWord16# x i)
 #elif __GLASGOW_HASKELL__
 uncheckedShiftRL (W16# x) (I# i) = W16# (uncheckedShiftRL# x i)

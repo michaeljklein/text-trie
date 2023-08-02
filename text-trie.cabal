@@ -57,6 +57,7 @@ Extra-source-files:
 --     GHC ==8.6.1, GHC ==8.6.2,
 --     GHC ==9.0.2,
 --     GHC ==9.2.5, GHC ==9.2.6
+--     GHC ==9.4.5
 
 Source-Repository head
     Type:     git
@@ -75,8 +76,8 @@ Library
     -- The lower bounds are more restrictive than necessary.
     -- But then, we don't maintain any CI tests for older
     -- versions, so these are the lowest bounds we've verified.
-    Build-Depends: base       >= 4.5   && < 4.17
-                 , text       >= 1.2.3 && < 1.2.6
+    Build-Depends: base       >= 4.5   && < 4.18
+                 , text       >= 1.2.3 && < 2.1
                  , binary     >= 0.5.1 && < 0.8.10
 
 ------------------------------------------------------------

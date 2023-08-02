@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -Wall -fwarn-tabs #-}
-{-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE BangPatterns, CPP #-}
 
 ----------------------------------------------------------------
 --                                                  ~ 2019.04.11
@@ -20,9 +20,24 @@ import qualified Data.Text as T
 import qualified Data.Text.Internal as TI
 import qualified Data.Text.Unsafe as TU
 import qualified Data.Text.Array as TA
-import Data.Word (Word16)
 
+#if MIN_VERSION_text(2,0,0)
+
+import Data.Word (Word8)
+type TextElem = Word8
+
+dropElem :: Int -> Text -> Text
+dropElem = TU.dropWord8
+
+#else
+
+import Data.Word (Word16)
 type TextElem = Word16
+
+dropElem :: Int -> Text -> Text
+dropElem = TU.dropWord16
+
+#endif
 
 headElem :: Text -> TextElem
 {-# INLINE [0] headElem #-}
@@ -33,7 +48,7 @@ tailElem :: Text -> Maybe Text
 tailElem xs =
   if T.null xs
      then Nothing
-     else Just $ TU.dropWord16 1 xs
+     else Just $ dropElem 1 xs
 
 toListElem :: Text -> [TextElem]
 toListElem xs =
