@@ -10,7 +10,7 @@
 -- Maintainer  :  lambdamichael@gmail.com
 -- Stability   :  experimental
 --
--- Methods for accessing `Text` in terms of its constituent `Word16`'s
+-- Methods for accessing `Text` in terms of its constituent words
 ----------------------------------------------------------------
 
 module Data.Text.Internal.Word where
@@ -22,7 +22,9 @@ import qualified Data.Text.Unsafe as TU
 import qualified Data.Text.Array as TA
 import Data.Word (Word16)
 
-head16 :: Text -> Word16
+type TextElem = Word16
+
+head16 :: Text -> TextElem
 {-# INLINE [0] head16 #-}
 head16 (TI.Text xs i0 _) = xs `TA.unsafeIndex` i0
 
@@ -33,13 +35,13 @@ tail16 xs =
      then Nothing
      else Just $ TU.dropWord16 1 xs
 
-toList16 :: Text -> [Word16]
+toList16 :: Text -> [TextElem]
 toList16 xs =
   case tail16 xs of
     Nothing -> []
     Just ys -> head16 xs : toList16 ys
 
--- | Length of `Text` in `Word16`'s
+-- | Length of `Text` in `TextElem`'s
 -- length16 xs == length (toList16 xs)
 length16 :: Text -> Int
 {-# INLINE [0] length16 #-}
