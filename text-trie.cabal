@@ -69,7 +69,7 @@ Library
                    , Data.Trie.Text.Internal
                    , Data.Trie.Text.Convenience
                    , Data.Trie.TextInternal
-                   , Data.Text.Internal.Word16
+                   , Data.Text.Internal.Word
     Other-Modules:   Data.Trie.Text.BitTwiddle
                    , Data.Trie.Errors
     -- The lower bounds are more restrictive than necessary.

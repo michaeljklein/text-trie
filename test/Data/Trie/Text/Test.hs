@@ -24,7 +24,7 @@ import qualified Data.Trie.Text             as Tr
 import qualified Data.Trie.Text.Convenience as TC
 import qualified Data.Text                  as T
 import qualified Data.Text.Lazy             as L
-import Data.Text.Internal.Word16 (toList16, length16)
+import Data.Text.Internal.Word (toList16, length16)
 
 import qualified Test.HUnit          as HU
 import qualified Test.QuickCheck     as QC

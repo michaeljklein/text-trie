@@ -13,7 +13,7 @@
 -- Methods for accessing `Text` in terms of its constituent `Word16`'s
 ----------------------------------------------------------------
 
-module Data.Text.Internal.Word16 where
+module Data.Text.Internal.Word where
 
 import Data.Text (Text)
 import qualified Data.Text as T

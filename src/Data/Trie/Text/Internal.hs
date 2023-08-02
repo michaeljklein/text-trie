@@ -69,7 +69,7 @@ import Data.Trie.TextInternal
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.Lazy as L
-import Data.Text.Internal.Word16 (head16, length16)
+import Data.Text.Internal.Word (head16, length16)
 
 import Data.Binary
 #if MIN_VERSION_base(4,9,0)
