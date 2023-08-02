@@ -24,26 +24,26 @@ import Data.Word (Word16)
 
 type TextElem = Word16
 
-head16 :: Text -> TextElem
-{-# INLINE [0] head16 #-}
-head16 (TI.Text xs i0 _) = xs `TA.unsafeIndex` i0
+headElem :: Text -> TextElem
+{-# INLINE [0] headElem #-}
+headElem (TI.Text xs i0 _) = xs `TA.unsafeIndex` i0
 
-tail16 :: Text -> Maybe Text
-{-# INLINE [1] tail16 #-}
-tail16 xs =
+tailElem :: Text -> Maybe Text
+{-# INLINE [1] tailElem #-}
+tailElem xs =
   if T.null xs
      then Nothing
      else Just $ TU.dropWord16 1 xs
 
-toList16 :: Text -> [TextElem]
-toList16 xs =
-  case tail16 xs of
+toListElem :: Text -> [TextElem]
+toListElem xs =
+  case tailElem xs of
     Nothing -> []
-    Just ys -> head16 xs : toList16 ys
+    Just ys -> headElem xs : toListElem ys
 
 -- | Length of `Text` in `TextElem`'s
--- length16 xs == length (toList16 xs)
-length16 :: Text -> Int
-{-# INLINE [0] length16 #-}
-length16 (TI.Text _ off len) = len - off
+-- lengthElem xs == length (toListElem xs)
+lengthElem :: Text -> Int
+{-# INLINE [0] lengthElem #-}
+lengthElem (TI.Text _ off len) = len - off
 

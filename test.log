@@ -68,7 +68,7 @@ prop_fromListWithConst_takes_first
 prop_fromListWithLConst_takes_first
 +++ OK, passed 500 tests.
 
-prop_length16_is_length_toList16
+prop_lengthElem_is_length_toListElem
 +++ OK, passed 500 tests.
 
 smallcheck @ () (Text):
