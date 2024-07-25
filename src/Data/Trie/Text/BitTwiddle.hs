@@ -28,15 +28,21 @@ module Data.Trie.Text.BitTwiddle
     , mask, shorter, branchMask
     ) where
 
-import Data.Trie.TextInternal (TextElem)
+import Data.Text.Internal.Word (TextElem)
 
 import Data.Bits
 
-#if __GLASGOW_HASKELL__ >= 503
+#if MIN_VERSION_text(2,0,0)
+import GHC.Exts  (Int(..), uncheckedShiftRLWord8# )
+import GHC.Word (Word8(..))
+#elif __GLASGOW_HASKELL__ >= 902
+import GHC.Exts  (Int(..), uncheckedShiftRLWord16# )
+import GHC.Word (Word16(..))
+#elif __GLASGOW_HASKELL__ >= 503
 import GHC.Exts  (Int(..), uncheckedShiftRL# )
 import GHC.Word (Word16(..))
 #elif __GLASGOW_HASKELL__
-import GlaExts   ( Word8(..), Int(..), uncheckedShiftRL# )
+import GlaExts   (Int(..), uncheckedShiftRL# )
 import GHC.Word (Word16(..))
 #else
 import Data.Word (Word16(..))
@@ -49,10 +55,14 @@ type Prefix  = KeyElem
 type Mask    = KeyElem
 
 
-uncheckedShiftRL :: Word16 -> Int -> Word16
+uncheckedShiftRL :: TextElem -> Int -> TextElem
 {-# INLINE [0] uncheckedShiftRL #-}
-#if __GLASGOW_HASKELL__
 -- GHC: use unboxing to get @uncheckedShiftRL@ inlined.
+#if MIN_VERSION_text(2,0,0)
+uncheckedShiftRL (W8# x) (I# i) = W8# (uncheckedShiftRLWord8# x i)
+#elif __GLASGOW_HASKELL__ >= 902
+uncheckedShiftRL (W16# x) (I# i) = W16# (uncheckedShiftRLWord16# x i)
+#elif __GLASGOW_HASKELL__
 uncheckedShiftRL (W16# x) (I# i) = W16# (uncheckedShiftRL# x i)
 #else
 uncheckedShiftRL x i = shiftR x i
@@ -86,7 +96,7 @@ mask !i !m = maskW i m
 
 -- | Get mask by setting all bits higher than the smallest bit in
 -- @m@. Then apply that mask to @i@.
-maskW :: Word16 -> Word16 -> Prefix
+maskW :: TextElem -> TextElem -> Prefix
 {-# INLINE [0] maskW #-}
 maskW !i !m = i .&. (complement (m-1) `xor` m)
 -- TODO: try the alternatives mentioned in the Containers paper:
@@ -163,7 +173,7 @@ branchMask !p1 !p2
 --           -- !x -> case (x .|. uncheckedShiftRL x 16) of
 --            -- !x -> case (x .|. uncheckedShiftRL x 32) of   -- for 64 bit platforms
 --             !x -> (x `xor` uncheckedShiftRL x 1)
-highestBitMask :: Word16 -> Word16
+highestBitMask :: TextElem -> TextElem
 {-# INLINE [0] highestBitMask #-}
 highestBitMask !x0 =
   let !x1 = x0 .|. uncheckedShiftRL x0 1 in

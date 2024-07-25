@@ -12,18 +12,12 @@
 ------------------------------------------------------------
 
 module Data.Trie.TextInternal
-    ( Text, TextElem
+    ( Text
     , breakMaximalPrefix
     ) where
 
 import Data.Text (Text)
 import qualified Data.Text as T
-
-import Data.Word
-
-------------------------------------------------------------
--- | Associated type of 'Text'
-type TextElem = Word16
 
 -- | `T.commonPrefixes` unless `Nothing`,
 -- in which case @(`T.empty`, x, y)@ is returned
