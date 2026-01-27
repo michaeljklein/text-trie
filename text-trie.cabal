@@ -54,7 +54,10 @@ Extra-source-files:
 --     GHC ==8.0.1, GHC ==8.0.2,
 --     GHC ==8.2.1, GHC ==8.2.2,
 --     GHC ==8.4.1, GHC ==8.4.2, GHC ==8.4.3,
---     GHC ==8.6.1, GHC ==8.6.2
+--     GHC ==8.6.1, GHC ==8.6.2,
+--     GHC ==9.0.2,
+--     GHC ==9.2.5, GHC ==9.2.6
+--     GHC ==9.4.5
 
 Source-Repository head
     Type:     git
@@ -67,7 +70,7 @@ Library
                    , Data.Trie.Text.Internal
                    , Data.Trie.Text.Convenience
                    , Data.Trie.TextInternal
-                   , Data.Text.Internal.Word16
+                   , Data.Text.Internal.Word
     Other-Modules:   Data.Trie.Text.BitTwiddle
                    , Data.Trie.Errors
     -- The lower bounds are more restrictive than necessary.
@@ -98,7 +101,7 @@ Test-Suite test-text-trie
                  , HUnit
                  , smallcheck
                  , microbench
-                 , bytestring-trie >= 0.2.5 && < 0.2.6
+                 , bytestring-trie >= 0.2.5 && < 0.2.8
                  , silently >= 1.2.5 && < 1.2.6
 
 ------------------------------------------------------------

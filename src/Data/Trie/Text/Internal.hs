@@ -69,7 +69,7 @@ import Data.Trie.TextInternal
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.Lazy as L
-import Data.Text.Internal.Word16 (head16, length16)
+import Data.Text.Internal.Word (TextElem, headElem, lengthElem)
 
 import Data.Binary
 #if MIN_VERSION_base(4,9,0)
@@ -446,7 +446,7 @@ getPrefix :: Trie a -> Prefix
 getPrefix (Branch p _ _ _) = p
 getPrefix (Arc k _ _)
   | T.null k = 0 -- for lack of a better value
-  | otherwise = head16 k
+  | otherwise = headElem k
 getPrefix Empty = error "getPrefix: no Prefix of Empty"
 
 
@@ -460,7 +460,7 @@ errorLogHead :: String -> Text -> TextElem
 {-# NOINLINE errorLogHead #-}
 errorLogHead fn q
     | T.null q  = error $ "Data.Trie.Internal." ++ fn ++": found null subquery"
-    | otherwise = head16 q
+    | otherwise = headElem q
 
 
 ------------------------------------------------------------
@@ -683,7 +683,7 @@ match_ = flip start
                   Just v  -> goJust n v n q t
           else Nothing
         Just (p,k',q') ->
-          let n' = n + length16 p
+          let n' = n + lengthElem p
           in n' `seq`
               if T.null k'
               then
@@ -727,7 +727,7 @@ match_ = flip start
                   Just v  -> goJust n  v  n q t
           else Just (n0,v0)
         Just (p,k',q') ->
-          let n' = n + length16 p
+          let n' = n + lengthElem p
           in n' `seq`
               if T.null k'
               then
@@ -787,7 +787,7 @@ matchFB_ = \t q cons nil -> matchFB_' cons q t nil
 
         go n q   (Arc k mv t) =
             let (p,k',q') = breakMaximalPrefix k q -- foobar
-                n'        = n + length16 p
+                n'        = n + lengthElem p
             in n' `seq`
                 if T.null k'
                 then

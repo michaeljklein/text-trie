@@ -24,7 +24,7 @@ import qualified Data.Trie.Text             as Tr
 import qualified Data.Trie.Text.Convenience as TC
 import qualified Data.Text                  as T
 import qualified Data.Text.Lazy             as L
-import Data.Text.Internal.Word16 (toList16, length16)
+import Data.Text.Internal.Word (toListElem, lengthElem)
 
 import qualified Test.HUnit          as HU
 import qualified Test.QuickCheck     as QC
@@ -94,8 +94,8 @@ test  = do
     checkQuick 500  (prop_fromListWithLConst_takes_first :: [(Str, Int)] -> QC.Property)
     putStrLn ""
 
-    putStrLn "prop_length16_is_length_toList16"
-    checkQuick 500  (prop_length16_is_length_toList16 :: Str -> QC.Property)
+    putStrLn "prop_lengthElem_is_length_toListElem"
+    checkQuick 500  (prop_lengthElem_is_length_toListElem :: Str -> QC.Property)
     putStrLn ""
 
     putStrLn "smallcheck @ () (Text):" -- Beware the exponential!
@@ -419,13 +419,13 @@ x <== y =
 
 -- | Keys are ordered when converting to a list
 prop_toList :: Tr.Trie a -> QC.Property
-prop_toList t = ordered (toList16 . L.toStrict <$> Tr.keys t)
+prop_toList t = ordered (toListElem . L.toStrict <$> Tr.keys t)
     where ordered xs = QC.conjoin (zipWith (<==) xs (drop 1 xs))
 
 
 _takes_first :: (Eq c, Show c) => ([(L.Text, c)] -> Tr.Trie c) -> [(Str, c)] -> QC.Property
 _takes_first f assocs =
-    (Tr.toList . f) === (nubBy (apFst ((==) `on` (toList16 . L.toStrict))) . sortOn (toList16 . L.toStrict . fst))
+    (Tr.toList . f) === (nubBy (apFst ((==) `on` (toListElem . L.toStrict))) . sortOn (toListElem . L.toStrict . fst))
     $ map (first unStr) assocs
 
 
@@ -458,8 +458,8 @@ prop_fromListWithConst_takes_first = _takes_first (TC.fromListWith const . fmap 
 prop_fromListWithLConst_takes_first :: (Eq a, Show a) => [(Str, a)] -> QC.Property
 prop_fromListWithLConst_takes_first = _takes_first (TC.fromListWithL const . fmap (first L.toStrict))
 
-prop_length16_is_length_toList16 :: Str -> QC.Property
-prop_length16_is_length_toList16 = (length16 . L.toStrict . unStr) === (length . toList16 . L.toStrict . unStr)
+prop_lengthElem_is_length_toListElem :: Str -> QC.Property
+prop_lengthElem_is_length_toListElem = (lengthElem . L.toStrict . unStr) === (length . toListElem . L.toStrict . unStr)
 
 ----------------------------------------------------------------
 -- | Lift a function to apply to the first of pairs, retaining the second.

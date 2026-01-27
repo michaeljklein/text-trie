@@ -12,7 +12,7 @@
 --
 -- An efficient implementation of finite maps from strings to values.
 -- The implementation is based on /big-endian patricia trees/, like
--- "Data.IntMap". We first trie on the `Word16` elements of `T.Text`
+-- "Data.IntMap". We first trie on the underlying elements of `T.Text`
 -- and then trie on the big-endian bit representation of those
 -- elements. For further details, see
 --
